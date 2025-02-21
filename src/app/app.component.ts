@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ContainerComponent } from "./componentes/container/container.component";
 import { CabecalhoComponent } from "./componentes/cabecalho/cabecalho.component";
-import { SeparadorComponent } from './componentes/separador/separador.component';
 import { ContatoComponent } from './componentes/contato/contato.component';
 import { FormsModule } from '@angular/forms';
 
@@ -15,6 +14,8 @@ interface Contato {
 }
 
 import agenda from './agenda.json';
+import { FormularioContatoComponent } from './paginas/formulario-contato/formulario-contato.component';
+import { SeparadorComponent } from './componentes/separador/separador.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -26,7 +27,9 @@ import agenda from './agenda.json';
             CabecalhoComponent, 
             SeparadorComponent,
             ContatoComponent,
-            FormsModule
+            FormsModule,
+            FormularioContatoComponent,
+            SeparadorComponent            
         ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
