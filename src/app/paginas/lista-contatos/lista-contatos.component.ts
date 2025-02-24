@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContainerComponent } from "../../componentes/container/container.component";
 import { CabecalhoComponent } from "../../componentes/cabecalho/cabecalho.component";
 import { ContatoComponent } from '../../componentes/contato/contato.component';
 import { SeparadorComponent } from '../../componentes/separador/separador.component';
-
-import agenda from '../../agenda.json';
 import { RouterLink } from '@angular/router';
+import { ContatoService } from '../../services/contato.service';
+import { Contato } from '../../componentes/contato/contato';
 
 @Component({
   selector: 'app-lista-contatos',
@@ -25,11 +25,17 @@ import { RouterLink } from '@angular/router';
 
 
 
-export class ListaContatosComponent {
+export class ListaContatosComponent implements OnInit{
     title = 'indexa';
     alfabeto: string = 'abcdefghijklmnopqrstuvwxyz';
-    contatos: Array<Contato> = agenda;
+    contatos: Array<Contato> = [];
     filtroPorTexto: string = '';
+
+    constructor(private contatoService: ContatoService) {}
+
+    ngOnInit() {
+        this.contatos = this.contatoService.obterContatos();
+    }
   
     filtrarContatosPorTexto(): Array<Contato> {
       if(!this.filtroPorTexto) {
@@ -44,11 +50,4 @@ export class ListaContatosComponent {
       return this.filtrarContatosPorTexto().filter(contato => contato.nome.toLowerCase().startsWith(letra))
       .sort((a, b) => a.nome.localeCompare(b.nome));
     }
-}
-
-
-interface Contato {
-    id: number;
-    nome: string;
-    telefone: string;
 }
