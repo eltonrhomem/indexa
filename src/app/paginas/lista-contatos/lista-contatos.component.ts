@@ -17,7 +17,7 @@ import { Contato } from '../../componentes/contato/contato';
             SeparadorComponent,
             ContatoComponent,
             FormsModule,
-            RouterLink
+            RouterLink,
   ],
   templateUrl: './lista-contatos.component.html',
   styleUrls: ['./lista-contatos.component.css']
@@ -34,7 +34,9 @@ export class ListaContatosComponent implements OnInit{
     constructor(private contatoService: ContatoService) {}
 
     ngOnInit() {
-        this.contatos = this.contatoService.obterContatos();
+         this.contatoService.obterContatos().subscribe(listaContatos => {
+            this.contatos = listaContatos;
+         });
     }
   
     filtrarContatosPorTexto(): Array<Contato> {

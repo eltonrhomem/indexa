@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Contato } from '../componentes/contato/contato';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,27 +10,39 @@ import { Contato } from '../componentes/contato/contato';
 export class ContatoService {
 
     private contatos: Array<Contato> = [];
+    private readonly API = 'http://localhost:3000/contatos';
 
-  constructor() { 
-    //Tentar obter os dados do localStorage
-    const contatosLocalStorageString = localStorage.getItem('contatos');
-    const contatosLocalStorage = contatosLocalStorageString ? JSON.parse(contatosLocalStorageString) : null;
-
-    this.contatos = contatosLocalStorage || [];
-
-    //Salvar os contatos no localstorage
-    localStorage.setItem('contatos', JSON.stringify(this.contatos));
+  constructor(private http: HttpClient) { 
+   
   }
 
-  obterContatos() {
-    return this.contatos;
+  obterContatos():Observable<Contato[]> {
+    return this.http.get<Array<Contato>>(this.API);
+
   }
 
-  salvarContato(contato: Contato) {
-    console.log(contato)
-    console.log('this.contatos =', this.contatos)
-    this.contatos.push(contato);
-    localStorage.setItem('contatos', JSON.stringify(this.contatos));
+  salvarContato(contato: Contato): Observable<Contato> {
+    return this.http.post<Contato>(this.API, contato);
+
+  }
+  buscarPorId(id: number): Observable<Contato> {
+    return this.http.get<Contato>(`${this.API}/${id}`);
+  }
+
+  excluirContato(id: number): Observable<Contato> {
+    const url = `${this.API}/${id}`;
+    return this.http.delete<Contato>(url);
+  }
+  editarContato(contato: Contato): Observable<Contato> {
+    const url = `${this.API}/${contato.id}`;
+    return this.http.put<Contato>(url, contato);
+  }
+  editarOuSalvarContato(contato: Contato) {
+    if(contato.id) {
+      return this.editarContato(contato);
+    } else {
+      return this.salvarContato(contato);
+    }
   }
 }
 
