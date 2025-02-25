@@ -1,5 +1,5 @@
 <app-container>
-    <app-cabecalho> </app-cabecalho>
+    <app-cabecalho [telaInicial]="true" [bannerSrc]="'assets/banner.png'" [titulo]="'Organize, <span>conecte,</span> simplifique!'"></app-cabecalho>
     <input 
         type="search" 
         placeholder="Digite para buscar"
@@ -25,6 +25,7 @@
                 [nome]="contato.nome" 
                 [telefone]="contato.telefone" 
                 [id]="contato.id!"
+                [avatar]="contato.avatar"
             >
                 
             </app-contato>

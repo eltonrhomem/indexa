@@ -5,17 +5,21 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NgClass } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ContatoService } from '../../services/contato.service';
+import { MensagemErroComponent } from "../../componentes/mensagem-erro/mensagem-erro.component";
+import { CabecalhoComponent } from '../../componentes/cabecalho/cabecalho.component';
 
 @Component({
   selector: 'app-formulario-contato',
   standalone: true,
   imports: [
-                ContainerComponent,
-                SeparadorComponent,
-                ReactiveFormsModule,
-                NgClass,
-                RouterLink
-            ],
+    ContainerComponent,
+    SeparadorComponent,
+    ReactiveFormsModule,
+    NgClass,
+    RouterLink,
+    MensagemErroComponent,
+    CabecalhoComponent
+],
   templateUrl: './formulario-contato.component.html',
   styleUrl: './formulario-contato.component.css'
 })
@@ -37,6 +41,7 @@ export class FormularioContatoComponent implements OnInit {
     inicializarFormulario() {
         this.contatoForm = new FormGroup({
             nome: new FormControl('', Validators.required),
+            avatar: new FormControl('', Validators.required),
             telefone: new FormControl('', Validators.required),
             email: new FormControl('', [Validators.required, Validators.email]),
             aniversario: new FormControl(''),
@@ -44,6 +49,13 @@ export class FormularioContatoComponent implements OnInit {
             observacoes: new FormControl('')
         });
 
+    }
+    obterControle(nome: string): FormControl {
+        const control = this.contatoForm.get(nome)
+        if(!control) {
+            throw new Error(`Controle de formulário - ${nome} - não encontrado`);
+        }
+        return control as FormControl;
     }
     carregarContato() {
         const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -64,9 +76,25 @@ export class FormularioContatoComponent implements OnInit {
         });       
             
     }
+    aoSelecionarArquivo(event: any) {
+        const file: File = event.target.files[0];
+        if(file) {
+            this.lerArquivo(file);
+        }
+    }
+    lerArquivo(file: File) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if(reader.result) {
+                this.contatoForm.get('avatar')?.setValue(reader.result);
+            }            
+        };
+        reader.readAsDataURL(file);
+    }
 
     cancelar() {
         this.contatoForm.reset();
+        this.router.navigateByUrl('/lista-contatos');
     }
 
 }
